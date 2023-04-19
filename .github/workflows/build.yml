@@ -19,6 +19,22 @@ jobs:
 #        The package goal is used to create a JAR file from the project.
 #        The --file pom.xml specifies the location of the Maven project file.
         run: mvn -B package --file pom.xml
+
+      - name: Unit Test
+        run: mvn test
+
+      - name: Run PMD
+        run: mvn pmd:pmd
+
+      - name: Check Code Coverage
+        run: mvn jacoco:report
+
+      - name: Build Docker Image
+        run: |
+          docker build -t CiCdSpringBoot-0.0.1-SNAPSHOT .
+          docker run -p 8080:8080 CiCdSpringBoot-0.0.1-SNAPSHOT
+        working-directory: .
+
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
