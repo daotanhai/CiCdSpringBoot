@@ -1,35 +1,26 @@
-#Workflow name
-name: CI/CD Pipeline
+name: Build JAR File
+
 on:
-  #Manually trigger workflow runs
-  workflow_dispatch:
-  #Trigger the workflow on push from the main branch
   push:
-    branches:
-      - master
+    branches: master
+
 jobs:
-  #Test's job
-  tests:
-    name: Unit tests
-    #Run on Ubuntu using the latest version
+  build-jar:
     runs-on: ubuntu-latest
-    #Job's steps
     steps:
-      #Check-out your repository under $GITHUB_WORKSPACE, so your workflow can access it
-      - uses: actions/checkout@v1
-      #Set up JDK 8
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Java 8
+        uses: actions/setup-java@v3
         with:
-          java-version: '8'
-      #Set up Maven cache
-      - name: Cache Maven packages
-        #This action allows caching dependencies and build outputs to improve workflow execution time.
-        uses: actions/cache@v3
+          java-version: 8
+      - name: Build with Maven
+#        Runs the mvn command to build the application. The -B flag tells Maven to run in batch mode, which is useful for non-interactive builds.
+#        The package goal is used to create a JAR file from the project.
+#        The --file pom.xml specifies the location of the Maven project file.
+        run: mvn -B package --file pom.xml
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      #Run Tests
-      - name: Run Tests
-        run: mvn -B test
+          name: CiCdSpringBoot
+          path: target/CiCdSpringBoot.jar
