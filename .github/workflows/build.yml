@@ -13,7 +13,7 @@ jobs:
       - name: Set up Java 8
         uses: actions/setup-java@v1
         with:
-        java-version: 8
+         java-version: 8
       - name: Build with Maven
 #        Runs the mvn command to build the application. The -B flag tells Maven to run in batch mode, which is useful for non-interactive builds.
 #        The package goal is used to create a JAR file from the project.
