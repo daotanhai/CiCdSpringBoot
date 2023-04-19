@@ -31,8 +31,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t CiCdSpringBoot-0.0.1-SNAPSHOT .
-          docker run -p 8080:8080 CiCdSpringBoot-0.0.1-SNAPSHOT
+          docker build -t cicdspringboot .
+          docker run -p 8080:8080 cicdspringboot
         working-directory: .
 
       - name: Upload artifact
