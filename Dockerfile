@@ -1,6 +1,9 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:8-jre-alpine
 
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} CiCdSpringBoot-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+WORKDIR /app
+
+COPY ${JAR_FILE} app.jar
+
+CMD ["java", "-jar", "app.jar"]
