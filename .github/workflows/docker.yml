@@ -6,7 +6,7 @@ on:
       - docker
 
 env:
-  IMAGE_NAME: my-docker-image
+  IMAGE_NAME: cicdspringboot
   DOCKER_BUILDKIT: 1
 
 jobs:
@@ -53,7 +53,7 @@ jobs:
           push: true
           tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
           build-args: |
-            JAR_FILE=target/CiCdSpringBoot.jar
+            JAR_FILE=target/*.jar
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
