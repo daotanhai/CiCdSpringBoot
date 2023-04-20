@@ -43,7 +43,7 @@ jobs:
           path: target/site/jacoco/index.html
 
   build-docker:
-    needs: build
+    needs: build-jar
     runs-on: ubuntu-latest
     if: success()
 
