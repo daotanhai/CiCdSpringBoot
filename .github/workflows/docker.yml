@@ -50,6 +50,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml -DoutputDirectory=./target
+
       - name: list dir
         run: |
           ls
