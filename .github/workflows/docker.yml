@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: my-docker-image
+  IMAGE_NAME: cicdspringboot
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
@@ -35,6 +35,12 @@ jobs:
 
       - name: Check Code Coverage
         run: mvn jacoco:report
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: CiCdSpringBoot
+          path: target/CiCdSpringBoot-0.0.1-SNAPSHOT.jar
 
       - name: Upload Code Coverage Report
         uses: actions/upload-artifact@v2
