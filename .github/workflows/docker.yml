@@ -46,6 +46,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: list dir
+        working-directory: app
+        run: |
+          ls
+
       - name: Build the Docker image
         run: |
           docker build . -t ${{ env.IMAGE_NAME }} -f Dockerfile
