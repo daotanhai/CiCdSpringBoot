@@ -1,22 +1,71 @@
-name: Build and Publish Docker Image
+name: Build and Test
 
 on:
   push:
     branches:
-      - main
+      - docker
+  pull_request:
+
+env:
+  IMAGE_NAME: my-docker-image
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
 jobs:
-  build-and-publish-docker:
+  build-jar:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build Docker Image
-        run:
-          docker build -t cicdspringboot .
-          docker run -p 8080:8080 cicdspringboot
-        working-directory: .
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: 8
 
-    if: success() && github.event_name == 'push'
+      - name: Build JAR
+        run: mvn -B package --file pom.xml
+
+      - name: Run Unit Tests
+        run: mvn test
+
+      - name: Run PMD
+        run: mvn pmd:pmd
+
+      - name: Check Code Coverage
+        run: mvn jacoco:report
+
+      - name: Upload Code Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: target/site/jacoco/index.html
+
+  build-docker:
+    needs: build
+    runs-on: ubuntu-latest
+    if: success()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_PASSWORD }}
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:latest
