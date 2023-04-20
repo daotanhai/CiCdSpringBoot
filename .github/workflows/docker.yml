@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - docker
-  pull_request:
 
 env:
   IMAGE_NAME: cicdspringboot
@@ -69,9 +68,21 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_PASSWORD }}
 
-      - name: Build Docker image
+#      - name: Build Docker image
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: .
+#          push: true
+#          tags: ${{ env.IMAGE_NAME }}:latest
+      - name: Build Docker Image
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: ${{ env.IMAGE_NAME }}:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cicdspringboot:${{ github.sha }}
+          build-args: |
+            JAR_FILE=target/CiCdSpringBoot-0.0.1-SNAPSHOT.jar
+            APP_NAME=CiCdSpringBoot
+            APP_VERSION=0.0.1-SNAPSHOT
+            APP_PORT=8080
+            APP_OPTS=""
