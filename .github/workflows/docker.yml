@@ -1,0 +1,22 @@
+name: Build and Publish Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-publish-docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker Image
+        run:
+          docker build -t cicdspringboot .
+          docker run -p 8080:8080 cicdspringboot
+        working-directory: .
+
+    if: success() && github.event_name == 'push'

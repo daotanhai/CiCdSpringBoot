@@ -29,12 +29,6 @@ jobs:
       - name: Check Code Coverage
         run: mvn jacoco:report
 
-      - name: Build Docker Image
-        run: |
-          docker build -t cicdspringboot .
-          docker run -p 8080:8080 cicdspringboot
-        working-directory: .
-
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
